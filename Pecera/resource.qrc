@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/background.png</file>
+        <file>images/fish1.png</file>
+        <file>images/all_numbers.png</file>
+        <file>images/bg_pause.png</file>
+        <file>images/bg_gameover.png</file>
+    </qresource>
+</RCC>
