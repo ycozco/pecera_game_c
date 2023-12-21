@@ -1,40 +1,99 @@
 #include "Acuario.h"
+#include <sstream>
 
-Acuario::Acuario() : temperatura(0.0), ph(7.0), salinidad(0.0) {}
-
-void Acuario::agregarPez(const Pez& pez) {
-    std::lock_guard<std::mutex> guard(acuarioMutex);
-    peces.push_back(pez);
+// Constructor de la clase Acuario
+Acuario::Acuario() : temperatura(25.0), ph(7.0), salinidad(30.0) {
+    // Inicializa los valores predeterminados de temperatura, pH y salinidad
 }
 
-void Acuario::ajustarTemperatura(double temp) {
-    std::lock_guard<std::mutex> guard(acuarioMutex);
-    temperatura = temp;
+// Método para agregar un pez al acuario
+void Acuario::agregarPez(std::unique_ptr<Pez> pez) {
+    // Utiliza un bloque de bloqueo para evitar problemas de concurrencia
+    std::lock_guard<std::mutex> lock(acuarioMutex);
+    peces.push_back(std::move(pez));
 }
 
-void Acuario::ajustarPH(double pH) {
-    std::lock_guard<std::mutex> guard(acuarioMutex);
-    ph = pH;
+// Método para ajustar la temperatura del acuario
+void Acuario::ajustarTemperatura(double nuevaTemperatura) {
+    // Utiliza un bloque de bloqueo para evitar problemas de concurrencia
+    std::lock_guard<std::mutex> lock(acuarioMutex);
+    temperatura = nuevaTemperatura;
 }
 
-void Acuario::ajustarSalinidad(double sal) {
-    std::lock_guard<std::mutex> guard(acuarioMutex);
-    salinidad = sal;
+// Método para ajustar el pH del acuario
+void Acuario::ajustarPH(double nuevoPH) {
+    // Utiliza un bloque de bloqueo para evitar problemas de concurrencia
+    std::lock_guard<std::mutex> lock(acuarioMutex);
+    ph = nuevoPH;
 }
 
+// Método para ajustar la salinidad del acuario
+void Acuario::ajustarSalinidad(double nuevaSalinidad) {
+    // Utiliza un bloque de bloqueo para evitar problemas de concurrencia
+    std::lock_guard<std::mutex> lock(acuarioMutex);
+    salinidad = nuevaSalinidad;
+}
+
+// Método para obtener información del acuario y sus peces
 std::string Acuario::obtenerInformacion() const {
-    std::lock_guard<std::mutex> guard(acuarioMutex);
+    // Utiliza un bloque de bloqueo para evitar problemas de concurrencia
+    std::lock_guard<std::mutex> lock(acuarioMutex);
+
     std::stringstream info;
-    info << "Temperatura: " << temperatura << ", PH: " << ph << ", Salinidad: " << salinidad;
+    info << "Información del Acuario:" << std::endl;
+    info << "Temperatura: " << temperatura << " °C" << std::endl;
+    info << "pH: " << ph << std::endl;
+    info << "Salinidad: " << salinidad << " ppt" << std::endl;
+
+    if (!peces.empty()) {
+        info << "Peces en el Acuario:" << std::endl;
+        for (const auto& pez : peces) {
+            info << " - " << pez->obtenerInformacion() << std::endl;
+        }
+    } else {
+        info << "No hay peces en el Acuario." << std::endl;
+    }
+
     return info.str();
 }
 
+// Método para clonar el acuario (patrón Prototype)
 Acuario Acuario::clonar() const {
-    std::lock_guard<std::mutex> guard(acuarioMutex);
-    Acuario clon;
-    clon.peces = this->peces;
-    clon.temperatura = this->temperatura;
-    clon.ph = this->ph;
-    clon.salinidad = this->salinidad;
-    return clon;
+    // Utiliza un bloque de bloqueo para evitar problemas de concurrencia
+    std::lock_guard<std::mutex> lock(acuarioMutex);
+
+    Acuario copiaAcuario;
+    copiaAcuario.temperatura = this->temperatura;
+    copiaAcuario.ph = this->ph;
+    copiaAcuario.salinidad = this->salinidad;
+
+    // Clonar los peces
+    for (const auto& pez : peces) {
+        copiaAcuario.agregarPez(std::make_unique<Pez>(*pez));
+    }
+
+    return copiaAcuario;
+}
+
+// Sobrecarga del operador de asignación
+Acuario& Acuario::operator=(const Acuario& otro) {
+    if (this == &otro) {
+        return *this;  // Comprobar autoasignación
+    }
+
+    // Utiliza un bloque de bloqueo para evitar problemas de concurrencia
+    std::lock_guard<std::mutex> lock(acuarioMutex);
+
+    // Copiar los valores del otro acuario
+    temperatura = otro.temperatura;
+    ph = otro.ph;
+    salinidad = otro.salinidad;
+
+    // Clonar los peces
+    peces.clear();
+    for (const auto& pez : otro.peces) {
+        peces.push_back(std::make_unique<Pez>(*pez));
+    }
+
+    return *this;
 }
