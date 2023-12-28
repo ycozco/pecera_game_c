@@ -11,7 +11,7 @@ private:
     double temperatura;
     double ph;
     double salinidad;
-    std::mutex acuarioMutex;
+    mutable std::mutex acuarioMutex;
 
 public:
     Acuario();
