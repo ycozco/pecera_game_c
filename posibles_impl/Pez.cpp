@@ -5,6 +5,22 @@
 Pez::Pez(std::string species, std::string feeding, double temp, double ph, double salinity, double maxSize, std::string habitat, double oxygenation)
     : species(species), feeding(feeding), idealTemperature(temp), idealPh(ph), idealSalinity(salinity), maxSize(maxSize), naturalHabitat(habitat), requiredOxygenation(oxygenation) {}
 
+// Implementación del método de clonación
+std::unique_ptr<Pez> Pez::clonar() const {
+    // Crea una nueva instancia de Pez con los mismos atributos
+    std::unique_ptr<Pez> copiaPez = std::make_unique<Pez>(
+        this->getSpecies(),
+        this->getFeeding(),
+        this->getIdealTemperature(),
+        this->getIdealPh(),
+        this->getIdealSalinity(),
+        this->getMaxSize(),
+        this->getNaturalHabitat(),
+        this->getRequiredOxygenation()
+    );
+    
+    return copiaPez;
+}
 void Pez::setSpecies(const std::string& species) {
     this->species = species;
 }

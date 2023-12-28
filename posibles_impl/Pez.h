@@ -2,7 +2,7 @@
 #define PEZ_H
 #include "Acuario.h"
 #include <string>
-
+#include <memory>
 class Pez {
 private:
     std::string species;
@@ -56,7 +56,7 @@ public:
     bool operator==(const Pez& other) const;
     // Declaración del método esCompatibleConAcuario en la clase Pez
     bool esCompatibleConAcuario(const Acuario& acuario) const;
-
+    std::unique_ptr<Pez> clonar() const;
 };
 
 #endif // PEZ_H

@@ -5,17 +5,25 @@
 #include <QtSql/QSqlQuery> // Agregado el include de QSqlQuery
 
 std::mutex BaseDatosAcuario::dbMutex;
+// Declaración de la variable estática de instancia
+BaseDatosAcuario* BaseDatosAcuario::instance = nullptr;
 
-BaseDatosAcuario::BaseDatosAcuario(QSqlDatabase db) : db(db) {
-    db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("35.224.128.88");
-    db.setDatabaseName("pecera");
-    db.setUserName("root");
-    db.setPassword("112358");
-    if (!db.open()) {
-        qDebug() << "Error al conectar con la base de datos: " << db.lastError().text();
+// Implementación correcta de getInstance
+BaseDatosAcuario* BaseDatosAcuario::getInstance() {
+    if (instance == nullptr) {
+        std::lock_guard<std::mutex> guard(dbMutex);
+        if (instance == nullptr) {
+            QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
+            db.setHostName("35.224.128.88");
+            db.setDatabaseName("pecera");
+            db.setUserName("root");
+            db.setPassword("112358");
+            instance = new BaseDatosAcuario(db);
+        }
     }
+    return instance;
 }
+
 
 BaseDatosAcuario::~BaseDatosAcuario() {
     if (db.isOpen()) {

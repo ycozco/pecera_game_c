@@ -10,6 +10,7 @@
 #include "Acuario.h"
 class BaseDatosAcuario {
 private:
+    static BaseDatosAcuario* instance;
     QSqlDatabase db;
     static std::mutex dbMutex;
     
