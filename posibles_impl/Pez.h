@@ -1,71 +1,62 @@
 #ifndef PEZ_H
 #define PEZ_H
-
+#include "Acuario.h"
 #include <string>
 
 class Pez {
 private:
-    std::string especie;
-    std::string alimentacion;
-    double temperaturaIdeal;
-    double phIdeal;
-    double salinidadIdeal;
-    double tamañoMaximo;
-    std::string habitatNatural;
-    double oxigenacionNecesaria;
+    std::string species;
+    std::string feeding;
+    double idealTemperature;
+    double idealPh;
+    double idealSalinity;
+    double maxSize;
+    std::string naturalHabitat;
+    double requiredOxygenation;
 
 public:
-    // Constructor de la clase Pez
-    Pez(std::string especie, std::string alimentacion, double temp, double ph, double salinidad, double tamaño, std::string habitat, double oxigenacion)
-        : especie(especie), alimentacion(alimentacion), temperaturaIdeal(temp), phIdeal(ph), salinidadIdeal(salinidad), tamañoMaximo(tamaño), habitatNatural(habitat), oxigenacionNecesaria(oxigenacion) {
-    }
+    // Constructor
+    Pez(std::string species, std::string feeding, double temp, double ph, double salinity, double maxSize, std::string habitat, double oxygenation);
 
-    // Getter y Setter para la especie del pez
-    void setEspecie(const std::string& especie) { this->especie = especie; }
-    std::string getEspecie() const { return especie; }
-
-    // Otros setters y getters para los atributos del pez
-    void setAlimentacion(const std::string& alimentacion) { this->alimentacion = alimentacion; }
-    std::string getAlimentacion() const { return alimentacion; }
-
-    void setTemperaturaIdeal(double temp) { temperaturaIdeal = temp; }
-    double getTemperaturaIdeal() const { return temperaturaIdeal; }
-
-    void setPhIdeal(double ph) { phIdeal = ph; }
-    double getPhIdeal() const { return phIdeal; }
-
-    void setSalinidadIdeal(double salinidad) { salinidadIdeal = salinidad; }
-    double getSalinidadIdeal() const { return salinidadIdeal; }
-
-    void setTamañoMaximo(double tamaño) { tamañoMaximo = tamaño; }
-    double getTamañoMaximo() const { return tamañoMaximo; }
-
-    void setHabitatNatural(const std::string& habitat) { habitatNatural = habitat; }
-    std::string getHabitatNatural() const { return habitatNatural; }
-
-    void setOxigenacionNecesaria(double oxigenacion) { oxigenacionNecesaria = oxigenacion; }
-    double getOxigenacionNecesaria() const { return oxigenacionNecesaria; }
-
-    // Destructor virtual para herencia
+    // Destructor
     virtual ~Pez() = default;
 
-    // Sobrecarga del operador de igualdad
-    bool operator==(const Pez& otro) const {
-        return especie == otro.especie && alimentacion == otro.alimentacion && temperaturaIdeal == otro.temperaturaIdeal &&
-               phIdeal == otro.phIdeal && salinidadIdeal == otro.salinidadIdeal && tamañoMaximo == otro.tamañoMaximo &&
-               habitatNatural == otro.habitatNatural && oxigenacionNecesaria == otro.oxigenacionNecesaria;
-    }
+    // Setters and Getters
+    void setSpecies(const std::string& species);
+    std::string getSpecies() const;
 
-    // Método adicional para que el pez nade
-    virtual void nadar() const {
-        // Implementación de la función de nadar
-    }
+    void setFeeding(const std::string& feeding);
+    std::string getFeeding() const;
 
-    // Método para obtener información del pez
-    virtual std::string obtenerInformacion() const {
-        // Implementación de la función para obtener información
-        return "Especie: " + especie + ", Alimentación: " + alimentacion + ", Tamaño Máximo: " + std::to_string(tamañoMaximo);
-    }
+    void setIdealTemperature(double temp);
+    double getIdealTemperature() const;
+
+    void setIdealPh(double ph);
+    double getIdealPh() const;
+
+    void setIdealSalinity(double salinity);
+    double getIdealSalinity() const;
+
+    void setMaxSize(double maxSize);
+    double getMaxSize() const;
+
+    void setNaturalHabitat(const std::string& habitat);
+    std::string getNaturalHabitat() const;
+
+    void setRequiredOxygenation(double oxygenation);
+    double getRequiredOxygenation() const;
+
+    // Swim method
+    virtual void swim() const;
+
+    // Information method
+    virtual std::string getInfo() const;
+
+    // Equality operator
+    bool operator==(const Pez& other) const;
+    // Declaración del método esCompatibleConAcuario en la clase Pez
+    bool esCompatibleConAcuario(const Acuario& acuario) const;
+
 };
 
 #endif // PEZ_H

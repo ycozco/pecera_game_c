@@ -20,20 +20,16 @@ void AcuarioThread::run() {
                 acuario->ajustarTemperatura(acuario->getTemperaturaDeseada());
                 registrarActividad("Ajuste automático de la temperatura realizado.");
             }
-                // Lógica para monitorear y ajustar condiciones del acuario.
-    if (acuario->necesitaAjusteTemperatura()) {
-        acuario->ajustarTemperatura(acuario->getTemperaturaDeseada());
-        registrarActividad("Ajuste automático de la temperatura realizado.");
-    }
-    // Aquí se pueden añadir controles adicionales para pH, salinidad, etc.
-    if (acuario->necesitaAjustePH()) {
-        acuario->ajustarPH(acuario->getPHDeseado());
-        registrarActividad("Ajuste automático del pH realizado.");
-    }
-    if (acuario->necesitaAjusteSalinidad()) {
-        acuario->ajustarSalinidad(acuario->getSalinidadDeseada());
-        registrarActividad("Ajuste automático de la salinidad realizado.");
-    }
+
+            // Lógica para monitorear y ajustar condiciones del acuario.
+            if (acuario->necesitaAjustePH()) {
+                acuario->ajustarPH(acuario->getPHDeseado());
+                registrarActividad("Ajuste automático del pH realizado.");
+            }
+            if (acuario->necesitaAjusteSalinidad()) {
+                acuario->ajustarSalinidad(acuario->getSalinidadDeseada());
+                registrarActividad("Ajuste automático de la salinidad realizado.");
+            }
         }
         // Otras operaciones 
     }
@@ -72,29 +68,9 @@ void AcuarioThread::simularCicloDiaNoche() {
 
 void AcuarioThread::registrarActividad(const std::string& actividad) {
     std::lock_guard<std::mutex> guard(acuarioMutex);
-    // Suponiendo que BaseDatosAcuario tiene un método para registrar actividades
-    baseDatos->registrarEnBaseDatos(actividad);
+    emit actividadRegistrada(actividad);
 }
 
 void AcuarioThread::detenerEjecucion() {
     continuarEjecucion = false;
-}
-bool Pez::esCompatibleConAcuario(const Acuario& acuario) const {
-  // Verificamos que la temperatura del acuario esté dentro del rango ideal del pez.
-  if (acuario.getTemperatura() < temperaturaIdeal || acuario.getTemperatura() > temperaturaIdeal + 2) {
-    return false;
-  }
-
-  // Verificamos que el pH del acuario esté dentro del rango ideal del pez.
-  if (acuario.getPH() < phIdeal || acuario.getPH() > phIdeal + 0.2) {
-    return false;
-  }
-
-  // Verificamos que la salinidad del acuario esté dentro del rango ideal del pez.
-  if (acuario.getSalinidad() < salinidadIdeal || acuario.getSalinidad() > salinidadIdeal + 0.5) {
-    return false;
-  }
-
-  // Si todos los requisitos se cumplen, el pez es compatible con el acuario.
-  return true;
 }

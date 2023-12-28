@@ -1,13 +1,17 @@
 #include "BaseDatosAcuario.h"
+#include "Acuario.h"
 
-BaseDatosAcuario* BaseDatosAcuario::instance = nullptr;
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlQuery> // Agregado el include de QSqlQuery
 
-BaseDatosAcuario::BaseDatosAcuario() {
+std::mutex BaseDatosAcuario::dbMutex;
+
+BaseDatosAcuario::BaseDatosAcuario(QSqlDatabase db) : db(db) {
     db = QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("localhost");
-    db.setDatabaseName("acuarios");
-    db.setUserName("usuario");
-    db.setPassword("contraseña");
+    db.setHostName("35.224.128.88");
+    db.setDatabaseName("pecera");
+    db.setUserName("root");
+    db.setPassword("112358");
     if (!db.open()) {
         qDebug() << "Error al conectar con la base de datos: " << db.lastError().text();
     }
@@ -19,22 +23,18 @@ BaseDatosAcuario::~BaseDatosAcuario() {
     }
 }
 
-BaseDatosAcuario* BaseDatosAcuario::getInstance() {
-    std::lock_guard<std::mutex> guard(dbMutex);
-    if (!instance) {
-        instance = new BaseDatosAcuario();
-    }
-    return instance;
-}
-
 bool BaseDatosAcuario::insertarPez(const Pez& pez) {
     std::lock_guard<std::mutex> guard(dbMutex);
     QSqlQuery query;
     query.prepare("INSERT INTO peces (especie, alimentacion, ...) VALUES (?, ?, ...)");
-    query.addBindValue(QString::fromStdString(pez.getEspecie()));
-    query.addBindValue(QString::fromStdString(pez.getAlimentacion()));
+    query.addBindValue(QString::fromStdString(pez.getSpecies()));
+    query.addBindValue(QString::fromStdString(pez.getFeeding()));
     // ... añadir otros valores ...
-    return query.exec();
+    if (!query.exec()) {
+        qDebug() << "Error al insertar pez: " << query.lastError().text();
+        return false; // Agregada la comprobación de error y retorno
+    }
+    return true;
 }
 
 void BaseDatosAcuario::registrarEnBaseDatos(const std::string& actividad) {
@@ -53,7 +53,11 @@ bool BaseDatosAcuario::actualizarDetallesPez(int pezId, const std::string& detal
     query.prepare("UPDATE peces SET detalles = ? WHERE id = ?");
     query.addBindValue(QString::fromStdString(detalles));
     query.addBindValue(pezId);
-    return query.exec();
+    if (!query.exec()) {
+        qDebug() << "Error al actualizar detalles del pez: " << query.lastError().text();
+        return false; // Agregada la comprobación de error y retorno
+    }
+    return true;
 }
 
 std::string BaseDatosAcuario::obtenerDetallesPez(int pezId) {
@@ -66,10 +70,15 @@ std::string BaseDatosAcuario::obtenerDetallesPez(int pezId) {
     }
     return "";
 }
+
 bool BaseDatosAcuario::eliminarPez(int pezId) {
     std::lock_guard<std::mutex> guard(dbMutex);
     QSqlQuery query;
     query.prepare("DELETE FROM peces WHERE id = ?");
     query.addBindValue(pezId);
-    return query.exec();
+    if (!query.exec()) {
+        qDebug() << "Error al eliminar pez: " << query.lastError().text();
+        return false; // Agregada la comprobación de error y retorno
+    }
+    return true;
 }

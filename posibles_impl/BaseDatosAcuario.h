@@ -1,35 +1,41 @@
 #ifndef BASEDATOSACUARIO_H
 #define BASEDATOSACUARIO_H
 
+#include <QtSql>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QDebug>
 #include <mutex>
 #include "Pez.h"
-
+#include "Acuario.h"
 class BaseDatosAcuario {
 private:
-    static BaseDatosAcuario* instance;
     QSqlDatabase db;
-    std::mutex dbMutex;
-
-    BaseDatosAcuario();  // Constructor privado
-    ~BaseDatosAcuario(); // Destructor privado
+    static std::mutex dbMutex;
+    
+    // Constructor privado que recibe una conexión a la base de datos
+    BaseDatosAcuario(QSqlDatabase db);
 
 public:
-    BaseDatosAcuario(const BaseDatosAcuario&) = delete;            // No permitir copia
-    BaseDatosAcuario& operator=(const BaseDatosAcuario&) = delete; // No permitir asignación
+    // No permitir copia ni asignación
+    BaseDatosAcuario(const BaseDatosAcuario&) = delete;
+    BaseDatosAcuario& operator=(const BaseDatosAcuario&) = delete;
 
-    static BaseDatosAcuario* getInstance();  // Método para obtener la instancia
+    // Método para obtener la instancia de la base de datos
+    static BaseDatosAcuario* getInstance();
+
+    // Destructor
+    ~BaseDatosAcuario();
+
+    // Métodos para trabajar con la base de datos
     bool insertarPez(const Pez& pez);
     void registrarEnBaseDatos(const std::string& actividad);
 
-    // Métodos para manejar información detallada sobre peces
     bool actualizarDetallesPez(int pezId, const std::string& detalles);
     std::string obtenerDetallesPez(int pezId);
     bool eliminarPez(int pezId);
-
-    // Otros métodos relacionados con la base de datos...
+    
+    // Otros métodos de la clase...
 };
 
 #endif // BASEDATOSACUARIO_H

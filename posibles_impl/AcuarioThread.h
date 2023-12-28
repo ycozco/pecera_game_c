@@ -16,6 +16,9 @@ private:
     double intensidadIluminacion;
     bool continuarEjecucion;
 
+signals:
+    void actividadRegistrada(const std::string& actividad);
+
 public:
     explicit AcuarioThread(Acuario* acuario, std::mutex& acuarioMutex, BaseDatosAcuario* baseDatos);
     void run() override;

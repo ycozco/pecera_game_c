@@ -1,11 +1,11 @@
 #ifndef ACUARIO_H
 #define ACUARIO_H
 
-#include "Pez.h"
+
 #include <vector>
 #include <memory>
 #include <mutex>
-
+class Pez; 
 class Acuario {
 private:
     std::vector<std::unique_ptr<Pez>> peces;
@@ -21,13 +21,25 @@ public:
     void ajustarPH(double ph);
     void ajustarSalinidad(double salinidad);
     std::string obtenerInformacion() const;
-    Acuario clonar() const;  // Para el patrón Prototype
+    Acuario clonar() const;
 
+    // Métodos adicionales
+    bool necesitaAjusteTemperatura() const;
+    double getTemperaturaDeseada() const;
+    bool necesitaAjustePH() const;
+    double getPHDeseado() const;
+    bool necesitaAjusteSalinidad() const;
+    double getSalinidadDeseada() const;
+    double getTemperatura() const;
+    double getPH() const;
+    double getSalinidad() const;
     // Sobrecarga de operadores
     Acuario& operator=(const Acuario& otro);
 
     // Destructor
     ~Acuario() = default;
+    
+    // Método para obtener una copia de los peces
+    std::vector<std::unique_ptr<Pez>> obtenerPeces() const;
 };
-
 #endif // ACUARIO_H

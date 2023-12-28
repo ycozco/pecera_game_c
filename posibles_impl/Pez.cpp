@@ -1,105 +1,98 @@
 #include "Pez.h"
-#include <iostream>  // Agregar inclusión para std::cout
+#include "Acuario.h"
+#include <sstream>
 
-// Constructor de la clase Pez
-Pez::Pez(std::string especie, std::string alimentacion, double temp, double ph, double salinidad, double tamaño, std::string habitat, double oxigenacion)
-    : especie(especie), alimentacion(alimentacion), temperaturaIdeal(temp), phIdeal(ph), salinidadIdeal(salinidad), tamañoMaximo(tamaño), habitatNatural(habitat), oxigenacionNecesaria(oxigenacion) {}
+Pez::Pez(std::string species, std::string feeding, double temp, double ph, double salinity, double maxSize, std::string habitat, double oxygenation)
+    : species(species), feeding(feeding), idealTemperature(temp), idealPh(ph), idealSalinity(salinity), maxSize(maxSize), naturalHabitat(habitat), requiredOxygenation(oxygenation) {}
 
-// Implementación del método para obtener información del pez
-std::string Pez::obtenerInformacion() const {
+void Pez::setSpecies(const std::string& species) {
+    this->species = species;
+}
+
+std::string Pez::getSpecies() const {
+    return species;
+}
+
+void Pez::setFeeding(const std::string& feeding) {
+    this->feeding = feeding;
+}
+
+std::string Pez::getFeeding() const {
+    return feeding;
+}
+
+void Pez::setIdealTemperature(double temp) {
+    idealTemperature = temp;
+}
+
+double Pez::getIdealTemperature() const {
+    return idealTemperature;
+}
+
+void Pez::setIdealPh(double ph) {
+    idealPh = ph;
+}
+
+double Pez::getIdealPh() const {
+    return idealPh;
+}
+
+void Pez::setIdealSalinity(double salinity) {
+    idealSalinity = salinity;
+}
+
+double Pez::getIdealSalinity() const {
+    return idealSalinity;
+}
+
+void Pez::setMaxSize(double maxSize) {
+    this->maxSize = maxSize;
+}
+
+double Pez::getMaxSize() const {
+    return maxSize;
+}
+
+void Pez::setNaturalHabitat(const std::string& habitat) {
+    naturalHabitat = habitat;
+}
+
+std::string Pez::getNaturalHabitat() const {
+    return naturalHabitat;
+}
+
+void Pez::setRequiredOxygenation(double oxygenation) {
+    requiredOxygenation = oxygenation;
+}
+
+double Pez::getRequiredOxygenation() const {
+    return requiredOxygenation;
+}
+
+void Pez::swim() const {
+    // Implementation of the swim method
+}
+
+std::string Pez::getInfo() const {
     std::stringstream info;
-    info << "Especie: " << especie << ", Alimentación: " << alimentacion
-         << ", Temperatura Ideal: " << temperaturaIdeal << ", pH Ideal: " << phIdeal
-         << ", Salinidad Ideal: " << salinidadIdeal << ", Tamaño Máximo: " << tamañoMaximo
-         << ", Hábitat Natural: " << habitatNatural << ", Oxigenación Necesaria: " << oxigenacionNecesaria;
+    info << "Species: " << species << ", Feeding: " << feeding
+         << ", Ideal Temperature: " << idealTemperature << ", Ideal pH: " << idealPh
+         << ", Ideal Salinity: " << idealSalinity << ", Max Size: " << maxSize
+         << ", Natural Habitat: " << naturalHabitat << ", Required Oxygenation: " << requiredOxygenation;
     return info.str();
 }
 
-// Implementación del método para clonar un pez (patrón Prototype)
-Pez* Pez::clonar() const {
-    return new Pez(*this);
+bool Pez::operator==(const Pez& other) const {
+    return species == other.species && feeding == other.feeding &&
+           idealTemperature == other.idealTemperature && idealPh == other.idealPh &&
+           idealSalinity == other.idealSalinity && maxSize == other.maxSize &&
+           naturalHabitat == other.naturalHabitat && requiredOxygenation == other.requiredOxygenation;
 }
 
-// Implementación del método para que el pez nade
-void Pez::nadar() const {
-    std::cout << "El pez " << especie << " está nadando." << std::endl;
-}
-
-// Implementaciones de setters y getters
-void Pez::setEspecie(const std::string& especie) {
-    this->especie = especie;
-}
-
-std::string Pez::getEspecie() const {
-    return especie;
-}
-
-void Pez::setAlimentacion(const std::string& alimentacion) {
-    this->alimentacion = alimentacion;
-}
-
-std::string Pez::getAlimentacion() const {
-    return alimentacion;
-}
-
-// Implementa setters y getters para otros atributos aquí
-void Pez::setTemperaturaIdeal(double temp) {
-    temperaturaIdeal = temp;
-}
-
-double Pez::getTemperaturaIdeal() const {
-    return temperaturaIdeal;
-}
-
-void Pez::setPhIdeal(double ph) {
-    phIdeal = ph;
-}
-
-double Pez::getPhIdeal() const {
-    return phIdeal;
-}
-
-void Pez::setSalinidadIdeal(double salinidad) {
-    salinidadIdeal = salinidad;
-}
-
-double Pez::getSalinidadIdeal() const {
-    return salinidadIdeal;
-}
-
-void Pez::setTamañoMaximo(double tamaño) {
-    tamañoMaximo = tamaño;
-}
-
-double Pez::getTamañoMaximo() const {
-    return tamañoMaximo;
-}
-
-void Pez::setHabitatNatural(const std::string& habitat) {
-    habitatNatural = habitat;
-}
-
-std::string Pez::getHabitatNatural() const {
-    return habitatNatural;
-}
-
-void Pez::setOxigenacionNecesaria(double oxigenacion) {
-    oxigenacionNecesaria = oxigenacion;
-}
-
-double Pez::getOxigenacionNecesaria() const {
-    return oxigenacionNecesaria;
-}
-
-// Sobrecarga del operador de igualdad
-bool Pez::operator==(const Pez& otro) const {
-    return especie == otro.especie && alimentacion == otro.alimentacion &&
-           temperaturaIdeal == otro.temperaturaIdeal && phIdeal == otro.phIdeal &&
-           salinidadIdeal == otro.salinidadIdeal && tamañoMaximo == otro.tamañoMaximo &&
-           habitatNatural == otro.habitatNatural && oxigenacionNecesaria == otro.oxigenacionNecesaria;
-}
-
-// Sobrecarga del operador de desigualdad (!=)
-bool Pez::operator!=(const Pez& otro) const {
-    return !(*this == otro);
+bool Pez::esCompatibleConAcuario(const Acuario& acuario) const {
+    // Lógica para determinar si el pez es compatible con el acuario
+    // Ejemplo de lógica simplificada: verifica la temperatura, el pH y la salinidad
+    return (acuario.getTemperatura() >= idealTemperature && acuario.getTemperatura() <= (idealTemperature + 2.0)) &&
+           (acuario.getPH() >= idealPh && acuario.getPH() <= (idealPh + 0.2)) &&
+           (acuario.getSalinidad() >= idealSalinity && acuario.getSalinidad() <= (idealSalinity + 0.5));
 }

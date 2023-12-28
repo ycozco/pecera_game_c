@@ -1,0 +1,10 @@
+Detalles del pez con ID 1: 
+Detalles del pez con ID 2: 
+Detalles del pez con ID 3: 
+Detalles del pez con ID 4: 
+Detalles del pez con ID 5: 
+Detalles del pez con ID 6: 
+Detalles del pez con ID 7: 
+Detalles del pez con ID 8: 
+Detalles del pez con ID 9: 
+Detalles del pez con ID 10: 
