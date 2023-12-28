@@ -1,10 +1,13 @@
 #ifndef PEZ_H
 #define PEZ_H
-#include "Acuario.h"
-#include <string>
 
-class Pez {
-private:
+#include <string>
+#include <map>
+#include <memory>
+#include "Acuario.h"
+
+class FishCharacteristics {
+public:
     std::string species;
     std::string feeding;
     double idealTemperature;
@@ -14,49 +17,52 @@ private:
     std::string naturalHabitat;
     double requiredOxygenation;
 
+    FishCharacteristics(std::string species, std::string feeding, double temp, double ph, 
+                        double salinity, double size, std::string habitat, double oxygenation);
+};
+
+class Pez {
+private:
+    double currentSize;
+    std::string color;
+    std::shared_ptr<FishCharacteristics> characteristics;
+
+    static std::map<std::string, std::shared_ptr<FishCharacteristics>> flyweights;
+
 public:
-    // Constructor
-    Pez(std::string species, std::string feeding, double temp, double ph, double salinity, double maxSize, std::string habitat, double oxygenation);
+    Pez(double size, std::string color, std::string species, std::string feeding, double temp, 
+        double ph, double salinity, double max_size, std::string habitat, double oxygenation);
 
-    // Destructor
-    virtual ~Pez() = default;
+    static std::shared_ptr<FishCharacteristics> getFlyweight(std::string species, std::string feeding, 
+                                                             double temp, double ph, double salinity, 
+                                                             double size, std::string habitat, double oxygenation);
 
+    void swim() const;
+    std::string getInfo() const;
+    bool isCompatibleWithAquarium(const Acuario& aquarium) const;
+
+    std::unique_ptr<Pez> clone() const;
     // Setters and Getters
+    void setCurrentSize(double size);
+    double getCurrentSize() const;
+    void setColor(const std::string& color);
+    std::string getColor() const;
     void setSpecies(const std::string& species);
     std::string getSpecies() const;
-
     void setFeeding(const std::string& feeding);
     std::string getFeeding() const;
-
     void setIdealTemperature(double temp);
     double getIdealTemperature() const;
-
     void setIdealPh(double ph);
     double getIdealPh() const;
-
     void setIdealSalinity(double salinity);
     double getIdealSalinity() const;
-
     void setMaxSize(double maxSize);
     double getMaxSize() const;
-
     void setNaturalHabitat(const std::string& habitat);
     std::string getNaturalHabitat() const;
-
     void setRequiredOxygenation(double oxygenation);
     double getRequiredOxygenation() const;
-
-    // Swim method
-    virtual void swim() const;
-
-    // Information method
-    virtual std::string getInfo() const;
-
-    // Equality operator
-    bool operator==(const Pez& other) const;
-    // Declaración del método esCompatibleConAcuario en la clase Pez
-    bool esCompatibleConAcuario(const Acuario& acuario) const;
-
 };
 
 #endif // PEZ_H

@@ -1,4 +1,9 @@
+#include "Pez.h"
+#include "Acuario.h"
+#include "BaseDatosAcuario.h"
 #include "AcuarioThread.h"
+
+#include <thread>
 #include <random>
 #include <chrono>
 #include <iostream>
@@ -15,23 +20,23 @@ void AcuarioThread::run() {
 
         {
             std::lock_guard<std::mutex> guard(acuarioMutex);
-            // Lógica para monitorear y ajustar condiciones del acuario.
+            // Lógica para monitorear y ajustar las condiciones del acuario.
             if (acuario->necesitaAjusteTemperatura()) {
-                acuario->ajustarTemperatura(acuario->getTemperaturaDeseada());
-                registrarActividad("Ajuste automático de la temperatura realizado.");
+                acuario->ajustarTemperatura(acuario->obtenerTemperaturaDeseada());
+                registrarActividad("Ajuste automático de temperatura realizado.");
             }
 
-            // Lógica para monitorear y ajustar condiciones del acuario.
-            if (acuario->necesitaAjustePH()) {
-                acuario->ajustarPH(acuario->getPHDeseado());
-                registrarActividad("Ajuste automático del pH realizado.");
+            // Lógica para monitorear y ajustar las condiciones del acuario.
+            if (acuario->necesitaAjustePh()) {
+                acuario->ajustarPh(acuario->obtenerPhDeseado());
+                registrarActividad("Ajuste automático de pH realizado.");
             }
             if (acuario->necesitaAjusteSalinidad()) {
-                acuario->ajustarSalinidad(acuario->getSalinidadDeseada());
-                registrarActividad("Ajuste automático de la salinidad realizado.");
+                acuario->ajustarSalinidad(acuario->obtenerSalinidadDeseada());
+                registrarActividad("Ajuste automático de salinidad realizado.");
             }
         }
-        // Otras operaciones 
+        // Otras operaciones
     }
 }
 
@@ -41,8 +46,8 @@ void AcuarioThread::generarEventoAleatorio() {
     std::uniform_int_distribution<> distrib(1, 100);
 
     int evento = distrib(gen);
-    if (evento <= 10) { // 10% de probabilidad de un evento
-        std::string actividad = "Evento aleatorio ocurrido en el acuario.";
+    if (evento <= 10) { // Probabilidad del 10% de un evento
+        std::string actividad = "Evento aleatorio ocurrió en el acuario.";
         registrarActividad(actividad);
     }
 }
@@ -50,16 +55,16 @@ void AcuarioThread::generarEventoAleatorio() {
 void AcuarioThread::ajustarIluminacion(double intensidad) {
     std::lock_guard<std::mutex> guard(acuarioMutex);
     intensidadIluminacion = intensidad;
-    std::cout << "La intensidad de la iluminación ha sido ajustada a " << intensidad << std::endl;
-    registrarActividad("Ajuste de iluminación a " + std::to_string(intensidad));
+    std::cout << "Intensidad de iluminación ajustada a " << intensidad << std::endl;
+    registrarActividad("Iluminación ajustada a " + std::to_string(intensidad));
 }
 
 void AcuarioThread::simularCicloDiaNoche() {
     using std::chrono::system_clock;
-    auto now = system_clock::to_time_t(system_clock::now());
-    std::tm* now_tm = std::localtime(&now);
+    auto ahora = system_clock::to_time_t(system_clock::now());
+    std::tm* ahora_tm = std::localtime(&ahora);
 
-    if (now_tm->tm_hour >= 6 && now_tm->tm_hour < 18) {
+    if (ahora_tm->tm_hour >= 6 && ahora_tm->tm_hour < 18) {
         ajustarIluminacion(1.0); // Día
     } else {
         ajustarIluminacion(0.1); // Noche

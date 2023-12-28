@@ -2,97 +2,134 @@
 #include "Acuario.h"
 #include <sstream>
 
-Pez::Pez(std::string species, std::string feeding, double temp, double ph, double salinity, double maxSize, std::string habitat, double oxygenation)
-    : species(species), feeding(feeding), idealTemperature(temp), idealPh(ph), idealSalinity(salinity), maxSize(maxSize), naturalHabitat(habitat), requiredOxygenation(oxygenation) {}
+// Definición del mapa estático para el patrón Flyweight
+std::map<std::string, std::shared_ptr<FishCharacteristics>> Pez::flyweights;
 
-void Pez::setSpecies(const std::string& species) {
-    this->species = species;
+// Constructor de la clase Pez
+Pez::Pez(double size, std::string color, std::string species, std::string feeding, double temp, 
+         double ph, double salinity, double maxSize, std::string habitat, double oxygenation)
+    : currentSize(size), color(color) {
+    characteristics = getFlyweight(species, feeding, temp, ph, salinity, maxSize, habitat, oxygenation);
 }
 
-std::string Pez::getSpecies() const {
-    return species;
+// Método estático getFlyweight para el patrón Flyweight
+std::shared_ptr<FishCharacteristics> Pez::getFlyweight(std::string species, std::string feeding, 
+                                                       double temp, double ph, double salinity, 
+                                                       double size, std::string habitat, double oxygenation) {
+    std::string key = species + feeding;
+    auto it = flyweights.find(key);
+    if (it == flyweights.end()) {
+        auto charac = std::make_shared<FishCharacteristics>(species, feeding, temp, ph, salinity, size, habitat, oxygenation);
+        flyweights[key] = charac;
+        return charac;
+    }
+    return it->second;
 }
 
-void Pez::setFeeding(const std::string& feeding) {
-    this->feeding = feeding;
-}
-
-std::string Pez::getFeeding() const {
-    return feeding;
-}
-
-void Pez::setIdealTemperature(double temp) {
-    idealTemperature = temp;
-}
-
-double Pez::getIdealTemperature() const {
-    return idealTemperature;
-}
-
-void Pez::setIdealPh(double ph) {
-    idealPh = ph;
-}
-
-double Pez::getIdealPh() const {
-    return idealPh;
-}
-
-void Pez::setIdealSalinity(double salinity) {
-    idealSalinity = salinity;
-}
-
-double Pez::getIdealSalinity() const {
-    return idealSalinity;
-}
-
-void Pez::setMaxSize(double maxSize) {
-    this->maxSize = maxSize;
-}
-
-double Pez::getMaxSize() const {
-    return maxSize;
-}
-
-void Pez::setNaturalHabitat(const std::string& habitat) {
-    naturalHabitat = habitat;
-}
-
-std::string Pez::getNaturalHabitat() const {
-    return naturalHabitat;
-}
-
-void Pez::setRequiredOxygenation(double oxygenation) {
-    requiredOxygenation = oxygenation;
-}
-
-double Pez::getRequiredOxygenation() const {
-    return requiredOxygenation;
-}
-
-void Pez::swim() const {
-    // Implementation of the swim method
-}
-
+// Método para obtener información del pez
 std::string Pez::getInfo() const {
     std::stringstream info;
-    info << "Species: " << species << ", Feeding: " << feeding
-         << ", Ideal Temperature: " << idealTemperature << ", Ideal pH: " << idealPh
-         << ", Ideal Salinity: " << idealSalinity << ", Max Size: " << maxSize
-         << ", Natural Habitat: " << naturalHabitat << ", Required Oxygenation: " << requiredOxygenation;
+    info << "Species: " << characteristics->species << ", Feeding: " << characteristics->feeding
+         << ", Ideal Temperature: " << characteristics->idealTemperature << ", Ideal pH: " << characteristics->idealPh
+         << ", Ideal Salinity: " << characteristics->idealSalinity << ", Max Size: " << characteristics->maxSize
+         << ", Natural Habitat: " << characteristics->naturalHabitat << ", Required Oxygenation: " << characteristics->requiredOxygenation;
     return info.str();
 }
 
-bool Pez::operator==(const Pez& other) const {
-    return species == other.species && feeding == other.feeding &&
-           idealTemperature == other.idealTemperature && idealPh == other.idealPh &&
-           idealSalinity == other.idealSalinity && maxSize == other.maxSize &&
-           naturalHabitat == other.naturalHabitat && requiredOxygenation == other.requiredOxygenation;
+// Método para simular la natación del pez
+void Pez::swim() const {
+    // Implementación del método de natación
 }
 
-bool Pez::esCompatibleConAcuario(const Acuario& acuario) const {
-    // Lógica para determinar si el pez es compatible con el acuario
-    // Ejemplo de lógica simplificada: verifica la temperatura, el pH y la salinidad
-    return (acuario.getTemperatura() >= idealTemperature && acuario.getTemperatura() <= (idealTemperature + 2.0)) &&
-           (acuario.getPH() >= idealPh && acuario.getPH() <= (idealPh + 0.2)) &&
-           (acuario.getSalinidad() >= idealSalinity && acuario.getSalinidad() <= (idealSalinity + 0.5));
+// Método para verificar si el pez es compatible con un acuario
+bool Pez::isCompatibleWithAquarium(const Acuario& aquarium) const {
+    return (aquarium.getTemperature() >= characteristics->idealTemperature && aquarium.getTemperature() <= (characteristics->idealTemperature + 2.0)) &&
+           (aquarium.getPh() >= characteristics->idealPh && aquarium.getPh() <= (characteristics->idealPh + 0.2)) &&
+           (aquarium.getSalinity() >= characteristics->idealSalinity && aquarium.getSalinity() <= (characteristics->idealSalinity + 0.5));
+}
+
+// Método para clonar un objeto Pez
+std::unique_ptr<Pez> Pez::clone() const {
+    return std::make_unique<Pez>(currentSize, color, characteristics->species, characteristics->feeding, characteristics->idealTemperature, characteristics->idealPh, characteristics->idealSalinity, characteristics->maxSize, characteristics->naturalHabitat, characteristics->requiredOxygenation);
+}
+
+// Implementación de setters y getters
+void Pez::setCurrentSize(double size) {
+    currentSize = size;
+}
+
+double Pez::getCurrentSize() const {
+    return currentSize;
+}
+
+void Pez::setColor(const std::string& color) {
+    this->color = color;
+}
+
+std::string Pez::getColor() const {
+    return color;
+}
+
+void Pez::setSpecies(const std::string& species) {
+    characteristics->species = species;
+}
+
+std::string Pez::getSpecies() const {
+    return characteristics->species;
+}
+
+void Pez::setFeeding(const std::string& feeding) {
+    characteristics->feeding = feeding;
+}
+
+std::string Pez::getFeeding() const {
+    return characteristics->feeding;
+}
+
+void Pez::setIdealTemperature(double temp) {
+    characteristics->idealTemperature = temp;
+}
+
+double Pez::getIdealTemperature() const {
+    return characteristics->idealTemperature;
+}
+
+void Pez::setIdealPh(double ph) {
+    characteristics->idealPh = ph;
+}
+
+double Pez::getIdealPh() const {
+    return characteristics->idealPh;
+}
+
+void Pez::setIdealSalinity(double salinity) {
+    characteristics->idealSalinity = salinity;
+}
+
+double Pez::getIdealSalinity() const {
+    return characteristics->idealSalinity;
+}
+
+void Pez::setMaxSize(double maxSize) {
+    characteristics->maxSize = maxSize;
+}
+
+double Pez::getMaxSize() const {
+    return characteristics->maxSize;
+}
+
+void Pez::setNaturalHabitat(const std::string& habitat) {
+    characteristics->naturalHabitat = habitat;
+}
+
+std::string Pez::getNaturalHabitat() const {
+    return characteristics->naturalHabitat;
+}
+
+void Pez::setRequiredOxygenation(double oxygenation) {
+    characteristics->requiredOxygenation = oxygenation;
+}
+
+double Pez::getRequiredOxygenation() const {
+    return characteristics->requiredOxygenation;
 }
