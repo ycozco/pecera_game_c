@@ -1,4 +1,5 @@
 #include "Pez.h"
+#include "Acuario.h"
 #include "BaseDatosAcuario.h"
 #include "AcuarioThread.h" // Nuevo archivo para manejar operaciones en hilos
 #include <iostream>
@@ -35,3 +36,4 @@ int main() {
 }
 
 // my ip: 172.203.43.113
+// exec : g++ -o mainProgram main.cpp Pez.cpp BaseDatosAcuario.cpp Acuario.cpp AcuarioThread.cpp -std=c++14 $(pkg-config --cflags --libs Qt5Sql) -pthread -fPIC

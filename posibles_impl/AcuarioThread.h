@@ -3,8 +3,9 @@
 
 #include <QThread>
 #include <mutex>
-#include "Acuario.h"
-#include "BaseDatosAcuario.h"
+#include "Pez.h"
+#include "Acuario.h"           // 
+#include "BaseDatosAcuario.h"  // 
 
 class AcuarioThread : public QThread {
     Q_OBJECT

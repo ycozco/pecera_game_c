@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/Pecera", // Ruta a la carpeta Pecera
+                "${workspaceFolder}/posibles_impl" // Ruta a la carpeta posibles_impl
+            ],
+            "defines": [],
+            "compilerPath": "/ruta/a/tu/compiler", // Ruta al compilador (g++ en este caso)
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "gcc-x64",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}/**"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            }
+        }
+    ],
+    "version": 4
+}

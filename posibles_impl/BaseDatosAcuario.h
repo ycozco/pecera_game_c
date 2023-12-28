@@ -1,19 +1,19 @@
 #ifndef BASEDATOSACUARIO_H
 #define BASEDATOSACUARIO_H
 
-#include <QtSql>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QDebug>
 #include <mutex>
 #include "Pez.h"
 #include "Acuario.h"
+#include "AcuarioThread.h"
 class BaseDatosAcuario {
 private:
     static BaseDatosAcuario* instance;
     QSqlDatabase db;
     static std::mutex dbMutex;
-    
+
     // Constructor privado que recibe una conexión a la base de datos
     BaseDatosAcuario(QSqlDatabase db);
 
@@ -35,8 +35,6 @@ public:
     bool actualizarDetallesPez(int pezId, const std::string& detalles);
     std::string obtenerDetallesPez(int pezId);
     bool eliminarPez(int pezId);
-    
-    // Otros métodos de la clase...
 };
 
 #endif // BASEDATOSACUARIO_H
